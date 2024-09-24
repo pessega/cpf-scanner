@@ -90,7 +90,7 @@ const Report: React.FC = () => {
             <strong>Profissão:</strong> {person.profissao}
           </p>
           <p>
-            <strong>Sexo:</strong> {person.sexo}
+            <strong>Sexoo:</strong> {person.sexo}
           </p>
         </div>
       )}
