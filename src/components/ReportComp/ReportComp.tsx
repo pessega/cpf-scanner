@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import InputMask from 'react-input-mask';
+import {
+  ReportContainer,
+  InputContainer,
+  ClearButton,
+  SearchButton,
+  ErrorMessage,
+  PersonData,
+} from './styles';
 
 export interface Person {
   cpf: string;
@@ -22,6 +30,7 @@ const Report: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [cpfInput, setCpfInput] = useState<string>('');
   const [dataLoaded, setDataLoaded] = useState<SnapData | null>(null);
+  const [searchClicked, setSearchClicked] = useState<boolean>(false); // Estado para verificar se a busca foi clicada
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,20 +71,33 @@ const Report: React.FC = () => {
       setError('CPF não encontrado');
       setPerson(null);
     }
+    setSearchClicked(true);
+  };
+
+  const handleClear = () => {
+    setCpfInput('');
+    setPerson(null);
+    setError(null);
+    setSearchClicked(false);
   };
 
   return (
-    <div>
-      <InputMask
-        mask="999.999.999-99"
-        value={cpfInput}
-        onChange={(e) => setCpfInput(e.target.value)}
-        placeholder="Digite o CPF"
-      />
-      <button onClick={handleSearch}>Buscar</button>{' '}
-      {error && <div>{error}</div>}
+    <ReportContainer>
+      <InputContainer>
+        <InputMask
+          mask="999.999.999-99"
+          value={cpfInput}
+          onChange={(e) => setCpfInput(e.target.value)}
+          placeholder="Digite o CPF"
+        />
+        {searchClicked && cpfInput && (
+          <ClearButton onClick={handleClear}>&times;</ClearButton>
+        )}
+      </InputContainer>
+      <SearchButton onClick={handleSearch}>Buscar</SearchButton>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
       {person && (
-        <div>
+        <PersonData>
           <p>
             <strong>Nome Completo:</strong> {person['full name']}
           </p>
@@ -91,9 +113,9 @@ const Report: React.FC = () => {
           <p>
             <strong>Sexo:</strong> {person.sexo}
           </p>
-        </div>
+        </PersonData>
       )}
-    </div>
+    </ReportContainer>
   );
 };
 
