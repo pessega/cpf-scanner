@@ -66,7 +66,6 @@ const Report: React.FC = () => {
 
   return (
     <div>
-      <h1>Relatório de Dados Pessoais</h1>
       <InputMask
         mask="999.999.999-99"
         value={cpfInput}
