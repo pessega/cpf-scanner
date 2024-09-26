@@ -31,9 +31,8 @@ export const PersonDataTitle = styled.div`
 export const PersonDataWrapper = styled.div`
   text-align: left;
 
-  p {
-    margin: 5px 0;
-    /* text-transform: uppercase; */
+  div:last-child {
+    margin-bottom: 30px;
   }
 `;
 

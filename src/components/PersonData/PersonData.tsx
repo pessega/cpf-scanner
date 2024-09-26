@@ -27,12 +27,32 @@ interface PersonDataProps {
     identidade?: string;
     'titulo de eleitor'?: string;
     'status receita'?: string;
-
     profissao?: string;
   };
 }
 
 const PersonData: React.FC<PersonDataProps> = ({ person }) => {
+  const principalData = [
+    { label: 'Nome Completo', value: person['full name'] },
+    { label: 'Sexo', value: person.sexo },
+    { label: 'Data de nascimento', value: person['data nascimento'] },
+    { label: 'Nacionalidade', value: person.nacionalidade },
+    { label: 'País de nascimento', value: person.pais_nascimento },
+    { label: 'Estado de nascimento', value: person.estado_nascimento },
+    { label: 'Cidade de nascimento', value: person.cidade_nascimento },
+    { label: 'Escolaridade', value: person.escolaridade },
+    { label: 'Profissão', value: person.profissao },
+    { label: 'CTPS', value: person.ctps },
+    { label: 'PIS/PASEP', value: person['pis/pasep'] },
+    { label: 'Identidade', value: person.identidade },
+    { label: 'Título de eleitor', value: person['titulo de eleitor'] },
+    { label: 'Status receita', value: person['status receita'] },
+  ];
+
+  const contactsDetails = [
+    { label: 'Nome Completo', value: person['full name'] },
+  ];
+
   return (
     <Container>
       <ResultDataTitle>
@@ -161,6 +181,12 @@ const PersonData: React.FC<PersonDataProps> = ({ person }) => {
           </AttributeWrapper>
         )}
       </PersonDataWrapper>
+
+      <PersonDataTitle>
+        <p>Dados de contato</p>
+      </PersonDataTitle>
+
+      <PersonDataWrapper>{/*insira o código aqui*/}</PersonDataWrapper>
     </Container>
   );
 };
