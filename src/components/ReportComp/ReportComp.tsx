@@ -11,13 +11,7 @@ import PersonData from '../PersonData/PersonData';
 
 export interface Person {
   cpf: string;
-  // 'first names': string;
-  // 'full name': string;
-  // 'data nascimento': string;
-  // sexo: string;
   bookmark?: string;
-  // [key: string]: any;
-  // profissao: string;
 }
 
 export interface SnapData {

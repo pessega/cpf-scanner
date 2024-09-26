@@ -28,6 +28,9 @@ interface PersonDataProps {
     'titulo de eleitor'?: string;
     'status receita'?: string;
     profissao?: string;
+
+    emails?: Array<{ 'email address': string }>;
+    telefones?: Array<{ operadora: string; 'phone number': string }>;
   };
 }
 
@@ -49,9 +52,8 @@ const PersonData: React.FC<PersonDataProps> = ({ person }) => {
     { label: 'Status receita', value: person['status receita'] },
   ];
 
-  const contactsDetails = [
-    { label: 'Nome Completo', value: person['full name'] },
-  ];
+  const emails = person.emails || [];
+  const telefones = person.telefones || [];
 
   return (
     <Container>
@@ -62,129 +64,18 @@ const PersonData: React.FC<PersonDataProps> = ({ person }) => {
         <p>Dados principais</p>
       </PersonDataTitle>
       <PersonDataWrapper>
-        {person['full name'] && (
-          <AttributeWrapper>
-            <div>
-              <strong>Nome Completo:</strong>
-            </div>
-            <span> {person['full name']}</span>
-          </AttributeWrapper>
-        )}
-        {person.sexo && (
-          <AttributeWrapper>
-            <div>
-              <strong>Sexo:</strong>
-            </div>
-            <span>{person.sexo}</span>
-          </AttributeWrapper>
-        )}
-        {person['data nascimento'] && (
-          <AttributeWrapper>
-            <div>
-              <strong>Data de nascimento:</strong>
-            </div>
-            <span>{person['data nascimento']}</span>
-          </AttributeWrapper>
-        )}
-        {person.nacionalidade && (
-          <AttributeWrapper>
-            <div>
-              <strong>Nacionalidade:</strong>
-            </div>
-            <span>{person.nacionalidade}</span>
-          </AttributeWrapper>
-        )}
-        {person.pais_nascimento && (
-          <AttributeWrapper>
-            <div>
-              <strong>País de nascimento:</strong>
-            </div>
-            <span>{person.pais_nascimento}</span>
-          </AttributeWrapper>
-        )}
-        {person.estado_nascimento && (
-          <AttributeWrapper>
-            <div>
-              <strong>Estado de nascimento:</strong>
-            </div>
-            <span>{person.estado_nascimento}</span>
-          </AttributeWrapper>
-        )}
-        {person.cidade_nascimento && (
-          <AttributeWrapper>
-            <div>
-              <strong>Cidade de nascimento:</strong>
-            </div>
-            <span>{person.cidade_nascimento}</span>
-          </AttributeWrapper>
-        )}
-        {person.escolaridade && (
-          <AttributeWrapper>
-            <div>
-              {' '}
-              <strong>Escolaridade:</strong>
-            </div>
-            <span>{person.escolaridade}</span>
-          </AttributeWrapper>
-        )}
-        {person.profissao && (
-          <AttributeWrapper>
-            <div>
-              <strong>Profissao:</strong>
-            </div>
-            <span>{person.profissao}</span>
-          </AttributeWrapper>
-        )}
-        {person.ctps && (
-          <AttributeWrapper>
-            <div>
-              {' '}
-              <strong>CTPS:</strong>
-            </div>
-            <span>{person.ctps}</span>
-          </AttributeWrapper>
-        )}
-        {person['pis/pasep'] && (
-          <AttributeWrapper>
-            <div>
-              {' '}
-              <strong>PIS/PASEP:</strong>
-            </div>
-            <span>{person['pis/pasep']}</span>
-          </AttributeWrapper>
-        )}
-        {person.identidade && (
-          <AttributeWrapper>
-            <div>
-              {' '}
-              <strong>Identidade:</strong>
-            </div>
-            <span>{person.identidade}</span>
-          </AttributeWrapper>
-        )}
-        {person['titulo de eleitor'] && (
-          <AttributeWrapper>
-            <div>
-              {' '}
-              <strong>Titulo de eleitor:</strong>
-            </div>
-            <span>{person['titulo de eleitor']}</span>
-          </AttributeWrapper>
-        )}
-        {person['status receita'] && (
-          <AttributeWrapper>
-            <div>
-              {' '}
-              <strong>Status receita:</strong>
-            </div>
-            <span>{person['status receita']}</span>
-          </AttributeWrapper>
+        {principalData.map(
+          (item, index) =>
+            item.value && (
+              <AttributeWrapper key={index}>
+                <div>
+                  <strong>{item.label}:</strong>
+                </div>
+                <span>{item.value}</span>
+              </AttributeWrapper>
+            )
         )}
       </PersonDataWrapper>
-
-      <PersonDataTitle>
-        <p>Dados de contato</p>
-      </PersonDataTitle>
 
       <PersonDataWrapper>{/*insira o código aqui*/}</PersonDataWrapper>
     </Container>
