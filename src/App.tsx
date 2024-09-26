@@ -7,8 +7,6 @@ function App() {
   return (
     <>
       <GlobalStyles />
-      <h1>Consulta de CPF</h1>
-      {/* <PersonReport /> */}
       <ReportComp />
     </>
   );

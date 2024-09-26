@@ -6,17 +6,18 @@ import {
   ClearButton,
   SearchButton,
   ErrorMessage,
-  PersonData,
 } from './styles';
+import PersonData from '../PersonData/PersonData';
 
 export interface Person {
   cpf: string;
-  'first names': string;
-  'full name': string;
-  'data nascimento': string;
-  sexo: string;
+  // 'first names': string;
+  // 'full name': string;
+  // 'data nascimento': string;
+  // sexo: string;
   bookmark?: string;
-  [key: string]: any;
+  // [key: string]: any;
+  // profissao: string;
 }
 
 export interface SnapData {
@@ -30,7 +31,7 @@ const Report: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [cpfInput, setCpfInput] = useState<string>('');
   const [dataLoaded, setDataLoaded] = useState<SnapData | null>(null);
-  const [searchClicked, setSearchClicked] = useState<boolean>(false); // Estado para verificar se a busca foi clicada
+  const [searchClicked, setSearchClicked] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,6 +90,7 @@ const Report: React.FC = () => {
           value={cpfInput}
           onChange={(e) => setCpfInput(e.target.value)}
           placeholder="Digite o CPF"
+          color="#FFF"
         />
         {searchClicked && cpfInput && (
           <ClearButton onClick={handleClear}>&times;</ClearButton>
@@ -96,25 +98,7 @@ const Report: React.FC = () => {
       </InputContainer>
       <SearchButton onClick={handleSearch}>Buscar</SearchButton>
       {error && <ErrorMessage>{error}</ErrorMessage>}
-      {person && (
-        <PersonData>
-          <p>
-            <strong>Nome Completo:</strong> {person['full name']}
-          </p>
-          <p>
-            <strong>CPF:</strong> {person.cpf}
-          </p>
-          <p>
-            <strong>Data de Nascimento:</strong> {person['data nascimento']}
-          </p>
-          <p>
-            <strong>Profissão:</strong> {person.profissao}
-          </p>
-          <p>
-            <strong>Sexo:</strong> {person.sexo}
-          </p>
-        </PersonData>
-      )}
+      {person && <PersonData person={person} />}{' '}
     </ReportContainer>
   );
 };
