@@ -13,15 +13,24 @@ export interface Person {
   cpf: string;
   bookmark?: string;
 }
+export interface Email {
+  cpf: string;
+  bookmark?: string;
+}
 
 export interface SnapData {
   SNAP: Array<{
     pessoa: Person[];
+    email: Email[];
+    // empresa: Empresa[];
+    // endereco: Endereco[];
+    // telefone: Telefone[];
   }>;
 }
 
 const Report: React.FC = () => {
   const [person, setPerson] = useState<Person | null>(null);
+  const [email, setEmail] = useState<Email | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [cpfInput, setCpfInput] = useState<string>('');
   const [dataLoaded, setDataLoaded] = useState<SnapData | null>(null);

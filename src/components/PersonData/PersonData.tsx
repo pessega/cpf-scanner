@@ -29,12 +29,14 @@ interface PersonDataProps {
     'status receita'?: string;
     profissao?: string;
 
-    emails?: Array<{ 'email address': string }>;
     telefones?: Array<{ operadora: string; 'phone number': string }>;
+    enderecos?: Array<{ rua: string; cidade: string; estado: string }>;
+    vinculos?: Array<{ 'full name': string; cpf: string }>;
   };
+  email?: Array<{ 'email address': string }>;
 }
 
-const PersonData: React.FC<PersonDataProps> = ({ person }) => {
+const PersonData: React.FC<PersonDataProps> = ({ person, email }) => {
   const principalData = [
     { label: 'Nome Completo', value: person['full name'] },
     { label: 'Sexo', value: person.sexo },
@@ -52,14 +54,18 @@ const PersonData: React.FC<PersonDataProps> = ({ person }) => {
     { label: 'Status receita', value: person['status receita'] },
   ];
 
-  const emails = person.emails || [];
+  const emails = email || [];
   const telefones = person.telefones || [];
+  const enderecos = person.enderecos || [];
+  const vinculos = person.vinculos || [];
 
   return (
     <Container>
       <ResultDataTitle>
         <p>Relatório da consulta | CPF {formatCPF(person.cpf)}</p>
       </ResultDataTitle>
+
+      {/* Dados principais */}
       <PersonDataTitle>
         <p>Dados principais</p>
       </PersonDataTitle>
@@ -77,7 +83,23 @@ const PersonData: React.FC<PersonDataProps> = ({ person }) => {
         )}
       </PersonDataWrapper>
 
-      <PersonDataWrapper>{/*insira o código aqui*/}</PersonDataWrapper>
+      {/* Emails */}
+      {email && (
+        <PersonDataTitle>
+          <p>Dados de contato</p>
+        </PersonDataTitle>
+      )}
+      <PersonDataWrapper>
+        {email &&
+          email.map((email, index) => (
+            <AttributeWrapper key={index}>
+              <div>
+                <strong>Email:</strong>
+              </div>
+              <span>{email['email address']}</span>
+            </AttributeWrapper>
+          ))}
+      </PersonDataWrapper>
     </Container>
   );
 };
