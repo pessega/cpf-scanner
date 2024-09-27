@@ -1,51 +1,74 @@
 import React, { useEffect, useState } from 'react';
 import InputMask from 'react-input-mask';
+import logoCPFScanner from '../../assets/logo-cpf.png';
 import {
+  ClearButton,
   Container,
   ErrorMessage,
   InputContainer,
   LinkedPersonWrapper,
+  Logo,
   PersonDataTitle,
   PersonDataWrapper,
   ReportContainer,
   SearchButton,
 } from './styles';
+import Header from '../Header/Header';
 
-type Endereco = {
-  area: string;
-  'area code'?: string;
-  bairro: string;
-  city: string;
-  complemento?: string;
-  endereco: string;
-  numero?: string;
-};
-
-type Pessoa = {
+type Person = {
   cpf?: string;
   'data nascimento'?: string;
   'first names': string;
   'full name': string;
   vinculo: string;
-  endereco?: Endereco[];
-  telefone?: Telefone[];
-  bookmark?: string; // Aqui, bookmark é string | undefined
+  endereco?: Adress[];
+  telefone?: Phone[];
+  bookmark?: string;
+
+  sexo?: string;
+  nacionalidade?: string;
+  pais_nascimento?: string;
+  estado_nascimento?: string;
+  cidade_nascimento?: string;
+  escolaridade?: string;
+  ctps?: string;
+  'pis/pasep'?: string;
+  identidade?: string;
+  'titulo de eleitor'?: string;
+  'status receita'?: string;
+  profissao?: string;
+
+  procon?: string;
 };
 
-type Empresa = {
+type Business = {
   cnpj: string;
   vinculo: string;
   renda?: string;
   admissao?: string;
-  endereco: Endereco[];
+  endereco: Adress[];
   'razao social': string;
+};
+
+type Adress = {
+  area?: string;
+  'area code'?: string;
+  'cep ou zipcode'?: string;
+  bairro?: string;
+  city?: string;
+  complemento?: string;
+  endereco: string;
+  numero?: string;
+  nome?: string;
+  logradouro?: string;
+  'telefone relacionado'?: string;
 };
 
 type Email = {
   'email address': string;
 };
 
-type Telefone = {
+type Phone = {
   'phone number': string;
   operadora?: string;
   whatsapp?: string;
@@ -53,14 +76,18 @@ type Telefone = {
 
 type SnapData = {
   email: Email[];
-  empresa: Empresa[];
-  endereco: Endereco[];
-  pessoa: Pessoa[];
-  telefone: Telefone[];
+  empresa: Business[];
+  endereco: Adress[];
+  pessoa: Person[];
+  telefone: Phone[];
 };
 
 type JsonData = {
   SNAP: SnapData[];
+};
+
+const formatCPF = (cpf: any) => {
+  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 };
 
 const TestComp: React.FC = () => {
@@ -78,24 +105,20 @@ const TestComp: React.FC = () => {
 
   if (!data) return <div>Loading...</div>;
 
-  const snap = data.SNAP[0]; // Acessando o primeiro item do array SNAP
+  const snap = data.SNAP[0];
 
-  // Encontrar a pessoa com 'bookmark = true'
-  const pessoaPrincipal = snap.pessoa.find((p) => p.bookmark === 'true'); // Comparar com string 'true'
+  const principalPerson = snap.pessoa.find((p) => p.bookmark === 'true');
 
-  // Função para buscar dados
-  const handleBuscarCpf = () => {
-    if (pessoaPrincipal) {
-      // Remover todos os caracteres não numéricos do CPF inserido
+  const handleSearchCPF = () => {
+    if (principalPerson) {
       const cleanedCpfInput = cpfInput.replace(/\D/g, '');
 
-      // Imprimir no console para depuração
-      console.log('CPF Inserido:', cleanedCpfInput);
-      console.log('CPF da Pessoa Principal:', pessoaPrincipal.cpf);
+      // console.log('CPF Inserido:', cleanedCpfInput);
+      // console.log('CPF da Pessoa Principal:', principalPerson.cpf);
 
-      // Comparar CPF inserido com o CPF da pessoa principal
-      if (pessoaPrincipal.cpf === cleanedCpfInput) {
+      if (principalPerson.cpf === cleanedCpfInput) {
         setShowData(true);
+        setError(null);
       } else {
         setError('CPF não encontrado');
         setShowData(false);
@@ -106,116 +129,151 @@ const TestComp: React.FC = () => {
     }
   };
 
+  const handleClearInput = () => {
+    setCpfInput('');
+    setShowData(false);
+    setError(null);
+  };
+
   return (
-    <Container>
-      {/* Input para CPF */}
-      <ReportContainer>
-        <h1>Buscar CPF</h1>
-        <InputContainer>
-          <InputMask
-            mask="999.999.999-99"
-            value={cpfInput}
-            onChange={(e) => setCpfInput(e.target.value)}
-            placeholder="Digite o CPF"
-          />
-        </InputContainer>
-        <SearchButton onClick={handleBuscarCpf}>Buscar</SearchButton>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-      </ReportContainer>
-      {showData && (
-        <>
-          {/* Exibir a pessoa principal */}
-          <PersonDataTitle>
-            <h2>Pessoa Principal</h2>
-          </PersonDataTitle>
-          <PersonDataWrapper>
-            {pessoaPrincipal ? (
-              <div>
-                <p>Nome: {pessoaPrincipal['full name']}</p>
-                <p>CPF: {pessoaPrincipal.cpf || 'Não informado'}</p>
-                <p>
-                  Endereço:{' '}
-                  {pessoaPrincipal.endereco?.map((e) => e.endereco).join(', ')}
-                </p>
-                {pessoaPrincipal.telefone && (
-                  <p>
-                    Telefone:{' '}
-                    {pessoaPrincipal.telefone
-                      .map((t) => t['phone number'])
-                      .join(', ')}
-                  </p>
-                )}
-              </div>
-            ) : (
-              <p>Nenhuma pessoa principal com bookmark encontrada.</p>
+    <>
+      <Header />
+      <Container>
+        {/* Input para CPF */}
+        <ReportContainer>
+          <Logo src={logoCPFScanner} alt="Logo CPF Scanner" />
+          <InputContainer>
+            <InputMask
+              mask="999.999.999-99"
+              value={cpfInput}
+              onChange={(e) => setCpfInput(e.target.value)}
+              placeholder="Digite o CPF"
+            />
+            {cpfInput && (
+              <ClearButton onClick={handleClearInput}>×</ClearButton>
             )}
-          </PersonDataWrapper>
+          </InputContainer>
+          <SearchButton onClick={handleSearchCPF}>Buscar</SearchButton>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+        </ReportContainer>
 
-          {/* Exibir os emails */}
-          {snap.email && (
-            <>
-              <h2>Emails</h2>
-              {snap.email.map((e, index) => (
-                <p key={index}>{e['email address']}</p>
-              ))}
-            </>
-          )}
+        {showData && (
+          <>
+            {/* Pessoa principal */}
+            <PersonDataTitle>
+              <h2>Pessoa Principal</h2>
+            </PersonDataTitle>
+            <PersonDataWrapper>
+              {principalPerson ? (
+                <div>
+                  <p>Nome: {principalPerson['full name']}</p>
+                  <p>
+                    CPF: {formatCPF(principalPerson.cpf) || 'Não informado'}
+                  </p>
 
-          {/* Exibir os telefones */}
-          {snap.telefone && (
-            <>
-              <h2>Telefones</h2>
-              {snap.telefone.map((t, index) => (
-                <p key={index}>
-                  {t['phone number']}{' '}
-                  {t.whatsapp ? `(WhatsApp: ${t.whatsapp})` : ''}
-                </p>
-              ))}
-            </>
-          )}
-
-          {/* Exibir os endereços gerais */}
-          {snap.endereco && (
-            <>
-              <h2>Endereços</h2>
-              {snap.endereco.map((end, index) => (
-                <p key={index}>
-                  {end.endereco}, {end.bairro}, {end.city}
-                </p>
-              ))}
-            </>
-          )}
-
-          {/* Pessoas vinculadas */}
-          {snap.pessoa.filter((p) => p.bookmark !== 'true') && (
-            <>
-              <PersonDataTitle>
-                <h2>Pessoas vinculadas</h2>
-              </PersonDataTitle>
-              {snap.pessoa
-                .filter((p) => p.bookmark !== 'true') // Filtra as que não têm bookmark
-                .map((p, index) => (
-                  <LinkedPersonWrapper key={index}>
-                    <p>Nome: {p['full name']}</p>
-                    <p>CPF: {p.cpf || 'Não informado'}</p>
+                  {principalPerson.telefone && (
                     <p>
-                      Endereço: {p.endereco?.map((e) => e.endereco).join(', ')}
+                      Telefone:{' '}
+                      {principalPerson.telefone
+                        .map((t) => t['phone number'])
+                        .join(', ')}
                     </p>
-                    {p.telefone && (
-                      <>
-                        <p>
-                          Telefone:{' '}
-                          {p.telefone.map((t) => t['phone number']).join(', ')}
-                        </p>
-                      </>
-                    )}
-                  </LinkedPersonWrapper>
+                  )}
+                </div>
+              ) : (
+                <p>Nenhuma pessoa principal com bookmark encontrada.</p>
+              )}
+            </PersonDataWrapper>
+
+            {/* Emails */}
+            {snap.email && (
+              <>
+                <h2>Emails</h2>
+                {snap.email.map((e, index) => (
+                  <p key={index}>{e['email address']}</p>
                 ))}
-            </>
-          )}
-        </>
-      )}
-    </Container>
+              </>
+            )}
+
+            {/* Telefones */}
+            <PersonDataWrapper>
+              {snap.telefone && (
+                <>
+                  <h2>Telefones</h2>
+                  {snap.telefone.map((t, index) => (
+                    <p key={index}>
+                      {t['phone number']}{' '}
+                      <span>
+                        {' '}
+                        {t.operadora && ` - Operadora: ${t.operadora} `}
+                      </span>
+                      {t.whatsapp === 'Sim' ? `(WhatsApp)` : ''}
+                    </p>
+                  ))}
+                </>
+              )}
+            </PersonDataWrapper>
+
+            {/* Endereços gerais */}
+            <PersonDataWrapper>
+              {snap.endereco && (
+                <>
+                  <h2>Endereços</h2>
+
+                  {snap.endereco.map((end, index) => (
+                    <div key={index}>
+                      {end.logradouro && <span>{end.logradouro}, </span>}
+                      {end.complemento && <span>{end.complemento}, </span>}
+                      {end.city && <span>{end.city} -</span>}
+                      {end.area && <span> {end.area}</span>}
+                      {end['area code'] && (
+                        <span> - CEP: {end['area code']}</span>
+                      )}
+                    </div>
+                  ))}
+                </>
+              )}
+            </PersonDataWrapper>
+
+            {/* Pessoas vinculadas */}
+            {snap.pessoa.filter((p) => p.bookmark !== 'true') && (
+              <>
+                <PersonDataTitle>
+                  <h2>Pessoas vinculadas</h2>
+                </PersonDataTitle>
+                {snap.pessoa
+                  .filter((p) => p.bookmark !== 'true')
+                  .map((p, index) => (
+                    <LinkedPersonWrapper key={index}>
+                      <p>
+                        <strong>Nome:</strong> {p['full name']}
+                      </p>
+                      <p>Vínculo: {p.vinculo}</p>
+                      <p>CPF: {p.cpf || <span>Não informado</span>}</p>
+                      <p>
+                        Endereço:{' '}
+                        {p.endereco?.map((e) => e.endereco) || (
+                          <span>Não informado</span>
+                        )}
+                      </p>
+                      {p.telefone && (
+                        <>
+                          <p>
+                            Telefone:{' '}
+                            {p.telefone
+                              .map((t) => t['phone number'])
+                              .join(', ')}
+                          </p>
+                        </>
+                      )}
+                    </LinkedPersonWrapper>
+                  ))}
+              </>
+            )}
+          </>
+        )}
+      </Container>
+    </>
   );
 };
 

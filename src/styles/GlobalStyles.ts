@@ -8,6 +8,7 @@ export default createGlobalStyle`
     box-sizing: border-box;
 
     color: var(--text);
+    
   }
   
   html, border, #root {
@@ -43,6 +44,7 @@ export default createGlobalStyle`
   
   :root {
     --background: #0E1523;
+    --header: #112649;
     --text: #D6DCE5;
     --primary: #303030;
     --secondary: #15181C;
