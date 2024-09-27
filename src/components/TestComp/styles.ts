@@ -1,6 +1,52 @@
 import styled from 'styled-components';
 
-// Styled Components
+export const Container = styled.div`
+  /* width: 100%; */
+  display: flex;
+  flex-direction: column;
+  margin: 0 10vw;
+`;
+
+export const LinkedPersonWrapper = styled.div`
+  width: 100%;
+  border-bottom: 1px solid var(--light-gray);
+
+  padding: 20px 0;
+`;
+
+export const ResultDataTitle = styled.div`
+  background-color: var(--light-gray);
+  padding: 10px;
+  margin-top: 60px;
+
+  p {
+    color: var(--background);
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+`;
+
+export const PersonDataWrapper = styled.div`
+  text-align: left;
+
+  div:last-child {
+    margin-bottom: 30px;
+  }
+`;
+
+export const AttributeWrapper = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+
+  div {
+    flex: 1;
+    text-align: right;
+  }
+  span {
+    margin-left: 10px;
+    flex: 2;
+  }
+`;
 
 export const ReportContainer = styled.div`
   display: flex;
@@ -84,5 +130,18 @@ export const PersonData = styled.div`
 
   p {
     margin: 5px 0;
+  }
+`;
+
+export const PersonDataTitle = styled.div`
+  background-color: var(--dark-gray);
+  margin-bottom: 30px;
+  padding: 10px;
+  margin-top: 30px;
+
+  h2 {
+    color: var(--text);
+    font-weight: bold;
+    font-size: 1.1rem;
   }
 `;

@@ -35,6 +35,11 @@ export default createGlobalStyle`
     font-size: 1rem;
     line-height: 1.5rem;
   }
+
+  h1{
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
   
   :root {
     --background: #0E1523;

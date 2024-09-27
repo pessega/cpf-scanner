@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import InputMask from 'react-input-mask';
-import { ErrorMessage } from './styles';
+import {
+  Container,
+  ErrorMessage,
+  InputContainer,
+  LinkedPersonWrapper,
+  PersonDataTitle,
+  PersonDataWrapper,
+  ReportContainer,
+  SearchButton,
+} from './styles';
 
 type Endereco = {
   area: string;
@@ -98,86 +107,115 @@ const TestComp: React.FC = () => {
   };
 
   return (
-    <div>
+    <Container>
       {/* Input para CPF */}
-      <h2>Buscar CPF</h2>
-      <InputMask
-        mask="999.999.999-99"
-        value={cpfInput}
-        onChange={(e) => setCpfInput(e.target.value)}
-        placeholder="Digite o CPF"
-      />
-      <button onClick={handleBuscarCpf}>Buscar CPF</button>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-
+      <ReportContainer>
+        <h1>Buscar CPF</h1>
+        <InputContainer>
+          <InputMask
+            mask="999.999.999-99"
+            value={cpfInput}
+            onChange={(e) => setCpfInput(e.target.value)}
+            placeholder="Digite o CPF"
+          />
+        </InputContainer>
+        <SearchButton onClick={handleBuscarCpf}>Buscar</SearchButton>
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+      </ReportContainer>
       {showData && (
         <>
           {/* Exibir a pessoa principal */}
-          <h2>Pessoa Principal</h2>
-          {pessoaPrincipal ? (
-            <div>
-              <p>Nome: {pessoaPrincipal['full name']}</p>
-              <p>CPF: {pessoaPrincipal.cpf || 'Não informado'}</p>
-              <p>
-                Endereço:{' '}
-                {pessoaPrincipal.endereco?.map((e) => e.endereco).join(', ')}
-              </p>
-              {pessoaPrincipal.telefone && (
+          <PersonDataTitle>
+            <h2>Pessoa Principal</h2>
+          </PersonDataTitle>
+          <PersonDataWrapper>
+            {pessoaPrincipal ? (
+              <div>
+                <p>Nome: {pessoaPrincipal['full name']}</p>
+                <p>CPF: {pessoaPrincipal.cpf || 'Não informado'}</p>
                 <p>
-                  Telefone:{' '}
-                  {pessoaPrincipal.telefone
-                    .map((t) => t['phone number'])
-                    .join(', ')}
+                  Endereço:{' '}
+                  {pessoaPrincipal.endereco?.map((e) => e.endereco).join(', ')}
                 </p>
-              )}
-            </div>
-          ) : (
-            <p>Nenhuma pessoa principal com bookmark encontrada.</p>
-          )}
-
-          {/* Exibir os emails */}
-          <h2>Emails</h2>
-          {snap.email.map((e, index) => (
-            <p key={index}>{e['email address']}</p>
-          ))}
-
-          {/* Exibir os telefones */}
-          <h2>Telefones</h2>
-          {snap.telefone.map((t, index) => (
-            <p key={index}>
-              {t['phone number']}{' '}
-              {t.whatsapp ? `(WhatsApp: ${t.whatsapp})` : ''}
-            </p>
-          ))}
-
-          {/* Exibir os endereços gerais */}
-          <h2>Endereços</h2>
-          {snap.endereco.map((end, index) => (
-            <p key={index}>
-              {end.endereco}, {end.bairro}, {end.city}
-            </p>
-          ))}
-
-          {/* Exibir outras pessoas vinculadas */}
-          <h2>Outras Pessoas Vinculadas</h2>
-          {snap.pessoa
-            .filter((p) => p.bookmark !== 'true') // Filtra as que não têm bookmark
-            .map((p, index) => (
-              <div key={index}>
-                <p>Nome: {p['full name']}</p>
-                <p>CPF: {p.cpf || 'Não informado'}</p>
-                <p>Endereço: {p.endereco?.map((e) => e.endereco).join(', ')}</p>
-                {p.telefone && (
+                {pessoaPrincipal.telefone && (
                   <p>
                     Telefone:{' '}
-                    {p.telefone.map((t) => t['phone number']).join(', ')}
+                    {pessoaPrincipal.telefone
+                      .map((t) => t['phone number'])
+                      .join(', ')}
                   </p>
                 )}
               </div>
-            ))}
+            ) : (
+              <p>Nenhuma pessoa principal com bookmark encontrada.</p>
+            )}
+          </PersonDataWrapper>
+
+          {/* Exibir os emails */}
+          {snap.email && (
+            <>
+              <h2>Emails</h2>
+              {snap.email.map((e, index) => (
+                <p key={index}>{e['email address']}</p>
+              ))}
+            </>
+          )}
+
+          {/* Exibir os telefones */}
+          {snap.telefone && (
+            <>
+              <h2>Telefones</h2>
+              {snap.telefone.map((t, index) => (
+                <p key={index}>
+                  {t['phone number']}{' '}
+                  {t.whatsapp ? `(WhatsApp: ${t.whatsapp})` : ''}
+                </p>
+              ))}
+            </>
+          )}
+
+          {/* Exibir os endereços gerais */}
+          {snap.endereco && (
+            <>
+              <h2>Endereços</h2>
+              {snap.endereco.map((end, index) => (
+                <p key={index}>
+                  {end.endereco}, {end.bairro}, {end.city}
+                </p>
+              ))}
+            </>
+          )}
+
+          {/* Pessoas vinculadas */}
+          {snap.pessoa.filter((p) => p.bookmark !== 'true') && (
+            <>
+              <PersonDataTitle>
+                <h2>Pessoas vinculadas</h2>
+              </PersonDataTitle>
+              {snap.pessoa
+                .filter((p) => p.bookmark !== 'true') // Filtra as que não têm bookmark
+                .map((p, index) => (
+                  <LinkedPersonWrapper key={index}>
+                    <p>Nome: {p['full name']}</p>
+                    <p>CPF: {p.cpf || 'Não informado'}</p>
+                    <p>
+                      Endereço: {p.endereco?.map((e) => e.endereco).join(', ')}
+                    </p>
+                    {p.telefone && (
+                      <>
+                        <p>
+                          Telefone:{' '}
+                          {p.telefone.map((t) => t['phone number']).join(', ')}
+                        </p>
+                      </>
+                    )}
+                  </LinkedPersonWrapper>
+                ))}
+            </>
+          )}
         </>
       )}
-    </div>
+    </Container>
   );
 };
 
